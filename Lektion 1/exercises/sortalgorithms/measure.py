@@ -20,6 +20,7 @@ import timeit
 
 from collections.abc import Callable
 from functools import partial
+# from typing import
 
 import numpy as np
 import pandas as pd
@@ -37,8 +38,8 @@ from algorithms.inssort import inssortw_for
 from algorithms.inssort import inssortw_while
 from algorithms.defaults import qsort
 from algorithms.defaults import qsort2
-from algorithms.defaults import qsort_iterative
-from algorithms.defaults import qsort_iterative2
+from algorithms.defaults import qsorti
+from algorithms.defaults import qsorti2
 # pylint: enable=unused-import
 from algorithms.defaults import LENGTH_DEFAULT
 from algorithms.defaults import LIST_LENGTHS
@@ -73,7 +74,8 @@ def genarr(low: int = LOWER, high: int = UPPER,
 
 # pylint: disable=too-many-locals
 def measure(ldata: np.ndarray,
-            algo: Callable[[np.ndarray, int, int, bool, bool], tuple],
+            algo: Callable,
+            # algo: Callable[[np.ndarray, int, int, bool, bool], tuple],
             nlists: int = ITERATIONS, llength: int = 10,
             verbose=0):
     """Measure performance of a sorting algorithm."""
@@ -99,22 +101,13 @@ def measure(ldata: np.ndarray,
             if verbose > 2:
                 print(lslice)
             # Measure number of comparisons and swaps
-            # quicksort() requires special handling
-            qs_algos = ('qsort', 'qsort2',
-                        'qsort_iterative', 'qsort_iterative2')
-            if algo.__name__ in qs_algos:
-                _, c, s = algo(lslice, lo=0, hi=len(lslice) - 1)
-                # Measure execution time
-                f = partial(algo, lslice, 0, len(lslice) - 1)
-                timer = timeit.Timer(f)
-                t.append(timer.timeit(1))
-            else:
-                _, c, s = algo(lslice)
-                f = partial(algo, lslice)
-                timer = timeit.Timer(f)
-                t.append(timer.timeit(1))
+            _, c, s = algo(lslice, 0, len(lslice) - 1)
             comps.append(c)
             swaps.append(s)
+            # Measure execution time
+            f = partial(algo, lslice, 0, len(lslice) - 1)
+            timer = timeit.Timer(f)
+            t.append(timer.timeit(1))
         if verbose > 1:
             print(f"t = {t}")
             print(f"comps = {comps}")
@@ -229,14 +222,14 @@ def main_function() -> None:
                 # inssortw_for,
                 inssortw_while,
                 # qsort, qsort2,
-                # qsort_iterative,
-                qsort_iterative2]
+                # qsorti,
+                qsorti2]
         for algorithm in algos_list:
-            measure(ldata=data, algo=algorithm,
+            measure(ldata=data, algo=algorithm,  # type: ignore[arg-type]
                     nlists=nlists, llength=ll, verbose=1)
-        #measure(ldata=data, algo=qsort_iterative,
+        #measure(ldata=data, algo=qsorti,
         #        nlists=nlists, llength=ll, verbose=1)
-        #measure(ldata=data, algo=qsort_iterative2,
+        #measure(ldata=data, algo=qsorti2,
         #        nlists=nlists, llength=ll, verbose=1)
         # nlists=np.arange(30, 60, 10))
     print()
