@@ -21,7 +21,7 @@ from algorithms.qsort import qsorti2 as qsi2
 
 
 # Create some arrays
-N = 5000
+N = 2000
 LS = np.arange(0, N + 1)  # Sorted array: [0...N]
 LR = LS[::-1]  # Reverse-sorted array
 LRAND = np.random.randint(0, 10_000, N)  # Random array
@@ -35,8 +35,10 @@ L = LR
 
 # Algorithms to test
 # pylint: disable=unused-variable
-ALGS = [bs, bs2, bs3, ins, ins2, ins3, insww, qsi2]
+ALGS1 = [bs, bs2, bs3, ins, ins2, ins3, insww, qsi2]
 ALGS2 = [bs, bs2, bs3, ins, ins2, ins3, inswf, insww, qsi, qsi2]
+ALGS3 = [ins, ins2, ins3, inswf, insww, qsi, qsi2]
+ALGS = ALGS3
 # pylint: enable=unused-variable
 
 # def fw(algo: Callable[[np.ndarray, int, int, bool, bool], tuple],
@@ -55,7 +57,7 @@ def tw(func, arr: np.ndarray, n: int):
 def main():
     """main"""
     print(f"N={N}")
-    for algo in ALGS2:
+    for algo in ALGS:
         print(f"{algo.__name__}")
         print("sorted:  \t", end="")
         t = tw(func=algo, arr=LS, n=1)
